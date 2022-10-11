@@ -65,6 +65,9 @@ export const Content = styled.div`
 
   grid-area: content;
 
+  padding: 0 64px;
+  overflow-y: auto; // comando que só coloca o scroll se lotar a página
+
 `;  
 
 export const NewNote = styled.button`
