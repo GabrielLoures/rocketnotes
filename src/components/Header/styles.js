@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import { Link } from 'react-router-dom';
+
 export const Container = styled.header`
 
   grid-area: header; // usando essa propriedade, deixamos o header fixo no topo da tela (o pai do header, que é o Details, está com display grid)
@@ -18,7 +20,7 @@ export const Container = styled.header`
 
 `
 
-export const Profile = styled.div`
+export const Profile = styled(Link)`
 
   display: flex;
   align-items: center;
