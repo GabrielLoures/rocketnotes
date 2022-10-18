@@ -10,7 +10,7 @@ export function Button({ title, loading = false, ...rest }) { // temos que passa
     >
       {loading ? "Carregando..." : title} 
     </Container>
-  ); // acessamoso texto contido na propriedade "title" definida no componente Button lá no index.jsx do Details através da estrutura {props.propriedade}, que nesse caso é o title
+  ); // acessamos o texto contido na propriedade "title" definida no componente Button lá no index.jsx do Details através da estrutura {props.propriedade}, que nesse caso é o title
      // poderíamos também desestruturar o props e passar só a propriedade que iremos usar, assim como fizemos acima
 
 

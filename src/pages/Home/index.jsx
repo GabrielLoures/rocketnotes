@@ -47,7 +47,7 @@ export function Home() {
 
         <Section title="Minhas Notas">
 
-          <Note data={ {
+          <Note data={{
             title: "React", 
             tags: [
               { id: '1', name: 'react'},
