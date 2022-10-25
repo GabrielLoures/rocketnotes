@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 import { api } from "../services/api"
 
@@ -15,6 +15,10 @@ function AuthProvider({ children }) { // o children recebe o primeiro(s) filho(s
       const response = await api.post("/sessions", { email, password });
       const { user, token } = response.data; // pegamos o user e o token do usuário lá do back-end (são os valores que importam para nós nesse momento)
 
+      localStorage.setItem("@rocketnotes:user", JSON.stringify(user)) // temos que utilizar o localStorage do navegador para que, quando o usuário der reload na página após estar logado, ele não volte para a página de login. Isso acontece porque o State volta para o padrão (que no caso é vazio) quando a página é recarregada.  No primeiro parâmetro nós colocamos a key que quisermos entre "". No segundo parâmetro nós colocamos o value, que foi definido como um JSON.stringify, que nós usamos para converter o nosso objeto "user" em texto para ser salvo no localStorage.
+
+      localStorage.setItem("@rocketnotes:token", token) // como o token já é um texto, não foi preciso convertê-lo
+
       api.defaults.headers.authorization = `Bearer ${token}`; // estamos inserindo um texto Bearer de autorização, por padrão, no cabeçalho de toda as nossas requisições
 
       setData({ user, token })
@@ -28,6 +32,23 @@ function AuthProvider({ children }) { // o children recebe o primeiro(s) filho(s
     } 
 
   }
+
+  useEffect(() => {
+
+    const token = localStorage.getItem("@rocketnotes:token"); // pega os dados token e user lá no localStorage
+    const user = localStorage.getItem("@rocketnotes:user");
+
+    if(token && user) { // se token e user existem, tranforme o State deles com o setData() com os valores do localStorage atribuídos acima
+
+      api.defaults.headers.authorization = `Bearer ${token}`;
+
+      setData({
+        token,
+        user: JSON.parse(user) // retransformamos o user em um objeto com o parse
+      })
+    }
+
+  }, [])
 
   return(
     <AuthContext.Provider value={{ signIn, user: data.user }}>
