@@ -1,11 +1,36 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState } from 'react';
+
+import { api } from "../services/api"
 
 const AuthContext = createContext({});
 
 function AuthProvider({ children }) { // o children recebe o primeiro(s) filho(s) da função (no caso, as rotas <Routes /> no main.jsx)
 
+  const [data, setData] = useState({})
+
+  async function signIn({ email, password }) {
+
+    try {
+
+      const response = await api.post("/sessions", { email, password });
+      const { user, token } = response.data; // pegamos o user e o token do usuário lá do back-end (são os valores que importam para nós nesse momento)
+
+      api.defaults.headers.authorization = `Bearer ${token}`; // estamos inserindo um texto Bearer de autorização, por padrão, no cabeçalho de toda as nossas requisições
+
+      setData({ user, token })
+
+    } catch(error) {
+      if(error.response) {
+        alert(error.response.data.message);
+      } else {
+        alert("Não foi possível entrar.")
+      }
+    } 
+
+  }
+
   return(
-    <AuthContext.Provider value={{ name: "Gabriel Loures", email: "gabriel@gmail.com" }}>
+    <AuthContext.Provider value={{ signIn, user: data.user }}>
       {children}
     </AuthContext.Provider>
   )
