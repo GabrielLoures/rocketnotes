@@ -54,7 +54,7 @@ export function SignUp() {
           placeholder="Nome" 
           type="text" 
           icon={FiUser}
-          onChange={e => setName(e.target.value)}
+          onChange={e => setName(e.target.value)} // acessamos o useState em cada campo Input
         />
 
         <Input 
