@@ -16,6 +16,9 @@ export function New() {
   const [links, setLinks] = useState([]) // vetor que guarda todos os links
   const [newLink, setNewLink] = useState("") // link que vai ser adicionado no momento
 
+  const [tags, setTags] = useState([])
+  const [newTag, setNewTag] = useState("")
+
   function handleAddLink() {
 
     setLinks(prevState => [...prevState, newLink]) // pega o array anterior (prevState) e adiciona o newLink a um novo array que tem tudo que tinha no array anterior (...prevState)
@@ -23,9 +26,22 @@ export function New() {
 
   }
 
-  function handleRemoveLink(deleted) {
+  function handleRemoveLink(linkDeleted) {
 
-    setLinks(prevState => prevState.filter(link => link !== deleted)) // lógica: pega o array com os links (prevState) e retorna o array filtrado com o todos os links menos o que foi deletado
+    setLinks(prevState => prevState.filter(link => link !== linkDeleted)) // lógica: pega o array com os links (prevState) e retorna o array filtrado com o todos os links menos o que foi deletado
+
+  }
+
+  function handleAddTag() {
+
+    setTags(prevState => [...prevState, newTag]);
+    setNewTag("") // limpa o campo de digitação sempre que clicamos no adicionar
+
+  }
+
+  function handleRemoveTag(tagDeleted) {
+
+    setTags(prevState => prevState.filter(tag => tag !== tagDeleted))
 
   }
 
@@ -70,8 +86,25 @@ export function New() {
 
           <Section>
             <div className="tags">
-              <NoteItem value="react" />
-              <NoteItem isNew placeholder="Nova Tag"/>
+
+              {
+                tags.map((tag, index) => (
+                  <NoteItem 
+                    key={String(index)}
+                    value={tag}
+                    onClick={() => {handleRemoveTag(tag)}}               
+                  />
+                ))
+              }
+
+              <NoteItem 
+                isNew 
+                placeholder="Nova Tag"
+                onChange={e => setNewTag(e.target.value)}
+                value={newTag}
+                onClick={handleAddTag}
+              />
+
             </div>
           </Section>
 
