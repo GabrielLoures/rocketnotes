@@ -1,5 +1,9 @@
 import { useState } from "react"
 
+import { api } from "../../services/api";
+
+import { useNavigate } from "react-router-dom";
+
 import { Header } from '../../components/Header';
 import { Input } from '../../components/Input';
 import { Textarea } from '../../components/Textarea';
@@ -13,11 +17,16 @@ import { Container, Form } from './styles';
 
 export function New() {
 
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
   const [links, setLinks] = useState([]) // vetor que guarda todos os links
   const [newLink, setNewLink] = useState("") // link que vai ser adicionado no momento
 
   const [tags, setTags] = useState([])
   const [newTag, setNewTag] = useState("")
+
+  const navigate = useNavigate();
 
   function handleAddLink() {
 
@@ -45,6 +54,33 @@ export function New() {
 
   }
 
+  async function handleNewNote() {
+
+    if(!title) {
+      return alert("Digite o título da nota");
+    }
+    
+    if(newLink) {
+      return alert("Você deixou um link no campo para adicionar, mas não concluiu. Clique para adicionar ou deixe o campo vazio.")
+    }
+
+    if(newTag) {
+      return alert("Você deixou uma tag no campo para adicionar, mas não concluiu. Clique para adicionar ou deixe o campo vazio.")
+    }
+
+    await api.post("/notes", {
+      title,
+      description,
+      tags,
+      links
+    });
+
+    alert("Nota enviada com sucesso!");
+    
+    navigate("/"); // volta à página inical depois que clicamos no alerta
+
+  }
+
   return(
 
     <Container>
@@ -59,9 +95,15 @@ export function New() {
             <Link to="/">Voltar</Link>
           </header>
 
-          <Input placeholder="Título" />
+          <Input 
+            placeholder="Título"
+            onChange={ e => setTitle(e.target.value)} 
+          />
 
-          <Textarea placeholder="Observações"/>
+          <Textarea 
+            placeholder="Observações"
+            onChange={ e => setDescription(e.target.value)} 
+          />
 
           <Section title="Links Úteis">
 
@@ -108,7 +150,10 @@ export function New() {
             </div>
           </Section>
 
-          <Button title="Salvar" />
+          <Button 
+            title="Salvar"
+            onClick={handleNewNote}
+          />
 
         </Form>
       </main>

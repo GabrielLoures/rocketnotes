@@ -39,7 +39,7 @@ function AuthProvider({ children }) { // o children recebe o primeiro(s) filho(s
     const user = localStorage.removeItem("@rocketnotes:user");
 
     setData({}) // voltamos o setData a ser objeto vazio (estado inicial)
-
+    
   }
 
   async function updateProfile({ user, avatarFile }) {
