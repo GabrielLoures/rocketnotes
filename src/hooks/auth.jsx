@@ -19,7 +19,7 @@ function AuthProvider({ children }) { // o children recebe o primeiro(s) filho(s
 
       localStorage.setItem("@rocketnotes:token", token) // como o token já é um texto, não foi preciso convertê-lo
 
-      api.defaults.headers.commom['Authorization'] = `Bearer ${token}`; // estamos inserindo um texto Bearer de autorização, por padrão, no cabeçalho de toda as nossas requisições
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`; // estamos inserindo um texto Bearer de autorização, por padrão, no cabeçalho de toda as nossas requisições
 
       setData({ user, token })
 
@@ -42,6 +42,42 @@ function AuthProvider({ children }) { // o children recebe o primeiro(s) filho(s
 
   }
 
+  async function updateProfile({ user, avatarFile }) {
+
+    try {
+
+      if(avatarFile) {
+
+        const fileUploadForm = new FormData(); // usamos o new FormData() para enviarmos a foto de avatar como um arquivo
+        fileUploadForm.append("avatar", avatarFile); // adiciona no form criado acima um campo chamado "avatar" e dentro dele passamos o arquivo de imagem do avatar
+
+        const response = await api.patch("/users/avatar", fileUploadForm);
+        user.avatar = response.data.avatar;
+
+      }
+
+      await api.put("/users", user);
+      localStorage.setItem("@rocketnotes:user", JSON.stringify(user)) // o setItem nesse caso serve para substituir o conteúdo existente no localStorage
+
+      setData({
+        token: data.token,
+        user
+      })
+
+      alert("Perfil atualizado com sucesso!")
+
+    }
+
+    catch(error) {
+      if(error.response) {
+        alert(error.response.data.message);
+      } else {
+        alert("Não foi possível atualizar o perfil")
+      }
+    } 
+
+  }
+
   useEffect(() => {
 
     const token = localStorage.getItem("@rocketnotes:token"); // pega os dados token e user lá no localStorage
@@ -49,7 +85,7 @@ function AuthProvider({ children }) { // o children recebe o primeiro(s) filho(s
 
     if(token && user) { // se token e user existem, tranforme o State deles com o setData() com os valores do localStorage atribuídos acima
 
-      api.defaults.headers.commom['Authorization'] = `Bearer ${token}`;
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       setData({
         token,
@@ -61,9 +97,10 @@ function AuthProvider({ children }) { // o children recebe o primeiro(s) filho(s
 
   return(
     <AuthContext.Provider value={{ 
-      signIn, 
-      user: data.user,
-      signOut 
+      signIn,
+      signOut,
+      updateProfile,
+      user: data.user  
     }}>
       {children}
     </AuthContext.Provider>
