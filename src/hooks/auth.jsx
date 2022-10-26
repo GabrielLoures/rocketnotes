@@ -19,7 +19,7 @@ function AuthProvider({ children }) { // o children recebe o primeiro(s) filho(s
 
       localStorage.setItem("@rocketnotes:token", token) // como o token já é um texto, não foi preciso convertê-lo
 
-      api.defaults.headers.authorization = `Bearer ${token}`; // estamos inserindo um texto Bearer de autorização, por padrão, no cabeçalho de toda as nossas requisições
+      api.defaults.headers.commom['Authorization'] = `Bearer ${token}`; // estamos inserindo um texto Bearer de autorização, por padrão, no cabeçalho de toda as nossas requisições
 
       setData({ user, token })
 
@@ -33,6 +33,15 @@ function AuthProvider({ children }) { // o children recebe o primeiro(s) filho(s
 
   }
 
+  function signOut() { // precisamos ir no botão de sair lá no componente "Header" para linkar essa funcionalidade a ele
+
+    const token = localStorage.removeItem("@rocketnotes:token"); // removemos os dados salvos no localStorage
+    const user = localStorage.removeItem("@rocketnotes:user");
+
+    setData({}) // voltamos o setData a ser objeto vazio (estado inicial)
+
+  }
+
   useEffect(() => {
 
     const token = localStorage.getItem("@rocketnotes:token"); // pega os dados token e user lá no localStorage
@@ -40,7 +49,7 @@ function AuthProvider({ children }) { // o children recebe o primeiro(s) filho(s
 
     if(token && user) { // se token e user existem, tranforme o State deles com o setData() com os valores do localStorage atribuídos acima
 
-      api.defaults.headers.authorization = `Bearer ${token}`;
+      api.defaults.headers.commom['Authorization'] = `Bearer ${token}`;
 
       setData({
         token,
@@ -51,7 +60,11 @@ function AuthProvider({ children }) { // o children recebe o primeiro(s) filho(s
   }, [])
 
   return(
-    <AuthContext.Provider value={{ signIn, user: data.user }}>
+    <AuthContext.Provider value={{ 
+      signIn, 
+      user: data.user,
+      signOut 
+    }}>
       {children}
     </AuthContext.Provider>
   )
