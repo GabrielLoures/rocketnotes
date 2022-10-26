@@ -1,5 +1,9 @@
 import { FiPlus, FiSearch } from 'react-icons/fi';
 
+import { useState, useEffect } from 'react';
+
+import { api } from "../../services/api";
+
 import { Container, Brand, Menu, Search, Content, NewNote } from './styles';
 
 import { Header } from '../../components/Header';
@@ -16,6 +20,22 @@ import { Note } from '../../components/Note';
 
 export function Home() {
 
+  const [tags,setTags] = useState([])
+
+  useEffect(() => {
+
+    async function fetchTags() { // como só iremos utilizar a função assíncrona dentro do useEffect (carrega quando é renderizado), colocamos ela dentro do useEffect
+      
+      const response = await api.get("/tags"); // pega o conteúdo do banco de dados localizado no '/tags'
+
+      setTags(response.data) // joga dentro a constante tags os valores consumidos da api
+
+    }
+
+    fetchTags()
+
+  }, [])
+
   return (
 
     <Container>
@@ -29,11 +49,18 @@ export function Home() {
       <Header />
 
       <Menu>
-       
-          <li><ButtonText title="Todos" isActived /></li>
-          <li><ButtonText title="Front-end"/></li>
-          <li><ButtonText title="Node.js"/></li>
-          <li><ButtonText title="React"/></li>
+
+       <li>
+        <ButtonText title="Todos" isActived />
+       </li>
+
+       {
+        tags && tags.map(tag => ( // significa "verifique se existe conteúdo em tags, então faça um map"
+          <li key={String(tag.id)}>
+            <ButtonText title={tag.name} />
+          </li>
+        ))  
+       } 
         
       </Menu>
 
