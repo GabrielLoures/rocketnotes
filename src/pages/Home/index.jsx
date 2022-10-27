@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 
 import { api } from "../../services/api";
 
+import { useNavigate } from 'react-router-dom';
+
 import { Container, Brand, Menu, Search, Content, NewNote } from './styles';
 
 import { Header } from '../../components/Header';
@@ -25,6 +27,8 @@ export function Home() {
   const [tagsSelected,setTagsSelected] = useState([])
   const [search,setSearch] = useState("")
 
+  const navigate = useNavigate();
+
   function handleTagSelected(tagName) {
 
     if(tagName === "all") {
@@ -42,6 +46,12 @@ export function Home() {
     } else {
       setTagsSelected(prevState => [...prevState, tagName])
     }
+
+  }
+
+  function handleDetails(id) { // função para quando clicarmos na nota, ir para a página dela
+
+    navigate(`/details/${id}`); 
 
   }
 
@@ -127,6 +137,7 @@ export function Home() {
               <Note
                 key={String(note.id)}
                 data={note}
+                onClick={() => handleDetails(note.id)}
               />
             ))                       
           }
