@@ -32,14 +32,16 @@ export function Profile() {
 
   async function handleUpdate() {
 
-    const user = {
+    const updated = {
       name,
       email,
       password: passwordNew,
       old_password: passwordOld
     }
 
-    await updateProfile({ user, avatarFile }); // temos que passar o avatar para nosso back-end
+    const userUpdated = Object.assign(user, updated) // o Object.assign pega o Objeto user e junta ao Objeto updated; com isso, o a foto do avatar passa a fazer parte do objeto, portanto não perdemos ela quando atualizamos outros dados (nome e email)
+
+    await updateProfile({ user: userUpdated, avatarFile }); // temos que passar o avatar para nosso back-end
 
   }
 

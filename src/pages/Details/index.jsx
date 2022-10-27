@@ -26,7 +26,7 @@ export function Details() {
 
   function handleBack() {
 
-    navigate("/")
+    navigate(-1) // o (-1) volta para a página anterior, diferentemente de passarmos a rota entre os (), que empilha rotas
 
   }
 

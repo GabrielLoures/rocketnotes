@@ -77,7 +77,7 @@ export function New() {
 
     alert("Nota enviada com sucesso!");
     
-    navigate("/"); // volta à página inical depois que clicamos no alerta
+    navigate(-1); // volta à página inical depois que clicamos no alerta
 
   }
 
